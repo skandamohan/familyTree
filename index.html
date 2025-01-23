@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chart.js Visualization</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <canvas id="familyTreeChart" width="800" height="600"></canvas>
+    <script>
+        function loadCSVData() {
+            Papa.parse('data.csv', {
+                download: true,
+                header: true,
+                dynamicTyping: true,
+                complete: function(results) {
+                    // When parsing is complete, process the data
+                    createFamilyTreeChart(results.data);
+                },
+                error: function(error) {
+                    console.error("Error loading the CSV file:", error);
+                }
+            });
+        }
+
+        function createFamilyTreeChart(data) {
+            var familyTreeData = {
+                labels: [],
+                datasets: [{
+                    label: 'Family Tree',
+                    data: [],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)',
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+          var personMap = {};
+            data.forEach(function(row) {
+                personMap[row.id] = row;
+            });
+
+            var maxGeneration = 0;
+            data.forEach(function(row) {
+                familyTreeData.labels.push(row.name);
+                familyTreeData.datasets[0].data.push(row.Generation);
+
+                if (row.Generation > maxGeneration) {
+                    maxGeneration = row.Generation;
+                }
+            });
+
+            var options = {
+                indexAxis: 'x', // Horizontal bars
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: maxGeneration + 1,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            };
+
+            var ctx = document.getElementById('familyTreeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: familyTreeData,
+                options: options
+            });
+        }
+
+        window.onload = function() {
+            loadCSVData();
+        };
+    </script>
+</body>
+</html>
