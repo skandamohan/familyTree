@@ -1,0 +1,4 @@
+id, name, parentId1, parentName1, parentId2, parentName2, gender, spouseId, spouseName
+02d912e8, Mohan N, , , , , male, 6367af5f, Vasumathi M
+6367af5f, Vasumathi M, , , , , female, 02d912e8, Mohan N
+85f5f40e, Skanda M, 6367af5f, Vasumathi M, 02d912e8, Mohan N, male, 3357542f, Mira A
